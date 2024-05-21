@@ -1,0 +1,4 @@
+node_modules
+id.json
+tokenHoldersSnapshot.json
+.env

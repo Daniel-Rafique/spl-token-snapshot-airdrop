@@ -1,0 +1,15 @@
+{
+  "name": "solana-token-snapshot",
+  "version": "1.0.0",
+  "description": "A script to take a snapshot of SPL token holders on Solana",
+  "main": "snapshot.js",
+  "scripts": {
+    "snap": "node snapshot.js",
+    "air": "node airdrop.js"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.6",
+    "@solana/web3.js": "^1.91.8",
+    "dotenv": "^16.4.5"
+  }
+}
