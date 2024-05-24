@@ -30,12 +30,19 @@ async function getTokenAccountsByMint(mintAddress) {
   );
 
   // Filter accounts to show only those with more than 1000 tokens
-  return accounts
-    .map(account => ({
-      publicKey: account.pubkey.toBase58(),
-      amount: parseFloat(account.account.data.parsed.info.tokenAmount.uiAmountString),
-    }))
-    .filter(account => account.amount > 1000);
+ // Filter accounts to show only those with more than 1000 tokens
+ return accounts
+ .map(account => {
+   const owner = account.account.data.parsed.info.owner;
+   const ownerAddress = owner instanceof PublicKey ? owner.toBase58() : owner;
+   return {
+     ownerAddress,
+     publicKey: account.pubkey.toBase58(),
+     amount: parseFloat(account.account.data.parsed.info.tokenAmount.uiAmountString),
+     airdrop: parseFloat(account.account.data.parsed.info.tokenAmount.uiAmountString) * 0.1
+   };
+ })
+ .filter(account => account.amount > 100);
 }
 
 async function snapshotTokenHolders() {
@@ -45,7 +52,12 @@ async function snapshotTokenHolders() {
     writeFileSync('tokenHoldersSnapshot.json', JSON.stringify(tokenAccounts, null, 2));
     console.log('Snapshot written to tokenHoldersSnapshot.json');
   } catch (error) {
-    console.error('Error taking snapshot:', error);
+    if (error.message.includes('422 Unprocessable Entity')) {
+      console.error(error.message);
+      console.error('You may need to use a different RPC node or handle the error case differently.');
+    } else {
+      console.error('Error taking snapshot:', error);
+    }
   }
 }
 
